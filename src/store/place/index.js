@@ -23,7 +23,7 @@ export const autoComplete = createAsyncThunk(
             const { data } = await axios.get('https://maps.googleapis.com/maps/api/place/autocomplete/json', {
                 params: {
                     input: keyword,
-                    key: ""
+                    key: process.env.REACT_APP_GOOGLE_MAP_KEY
                 }
 
             });
@@ -52,7 +52,7 @@ export const placeDetail = createAsyncThunk(
         try {
             const { data } = await axios.get('https://maps.googleapis.com/maps/api/place/details/json', {
                 place_id: placeId,
-                key: ""
+                key: process.env.REACT_APP_GOOGLE_MAP_KEY
             });
 
             return {
@@ -87,8 +87,33 @@ export const place = createSlice({
         });
 
         builder.addCase(placeDetail.fulfilled, (state, { payload }) => {
-            state.selected.latitude = payload.data.result.geometry.location.lat
-            state.selected.longitude = payload.data.result.geometry.location.lng
+            const lat = payload.data.result.geometry.location.lat;
+            const lng = payload.data.result.geometry.location.lng;
+
+            const placeId = payload.data.result.place_id;
+            const name = payload.data.result.formatted_address;
+
+            let historyArr = [...state.selectedHistory];
+
+            const found = historyArr.findIndex(val => {
+                return val.placeId === placeId
+            });
+
+
+            if (found !== -1) {
+                historyArr.push(historyArr.splice(found, 1)[0]);
+            } else {
+                historyArr.push({
+                    placeId,
+                    name,
+                    latitude: lat,
+                    longitude: lng
+                });
+            }
+
+            state.selectedHistory = historyArr;
+            state.selected.latitude = lat;
+            state.selected.longitude = lng;
             state.loading = false;
         });
 
