@@ -1,0 +1,7 @@
+{
+    "editor.guides.indentation": true,
+    "vetur.format.options.useTabs": false,
+    "editor.insertSpaces": true,
+    "editor.autoIndent": "full",
+    "editor.detectIndentation": false
+}
