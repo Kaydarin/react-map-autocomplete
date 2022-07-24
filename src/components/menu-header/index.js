@@ -1,9 +1,12 @@
+import { useSelector } from 'react-redux';
 import {
     Container,
     Box,
 } from '@mui/material'
 
 function MenuHeader() {
+
+    const { username } = useSelector(state => state.app);
 
     return (
         <Container maxWidth="xl">
@@ -16,7 +19,7 @@ function MenuHeader() {
                     Place AutoComplete
                 </Box>
                 <Box>
-                    Hello John Doe!
+                    Hello {username}!
                 </Box>
             </Box>
         </Container>
