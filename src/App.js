@@ -1,70 +1,8 @@
-import { useRef, useEffect, useState, useMemo } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import './App.css';
-import { Divider, Container, Box, TextField } from '@mui/material'
+import { Divider, Container, Box } from '@mui/material'
 import { Wrapper } from "@googlemaps/react-wrapper";
-
-
-function MyMapComponent(props) {
-    const mapRef = useRef();
-    const autoCompleteRef = useRef();
-
-    const initPosition = useMemo(() => ({ lat: 3.1193573, lng: 101.6694215 }), []);
-
-    const [position, setPosition] = useState(initPosition);
-
-    useEffect(() => {
-        new window.google.maps.Map(mapRef.current, {
-            center: position,
-            zoom: 15,
-        });
-    }, [position]);
-
-    useEffect(() => {
-        const autocomplete = new window.google.maps.places.Autocomplete(autoCompleteRef.current, {
-            center: initPosition,
-            zoom: 15,
-        });
-
-        autocomplete.addListener("place_changed", () => {
-            const place = autocomplete.getPlace();
-
-            const placeId = place.place_id;
-            const name = place.name;
-
-            const lat = place.geometry.location.lat();
-            const lng = place.geometry.location.lng();
-
-            setPosition({
-                lat: lat,
-                lng: lng
-            });
-
-            props.startedRef.current = true;
-
-            props.setPlace({
-                placeId,
-                name
-            })
-        });
-
-    }, [initPosition, props]);
-
-    return (
-        <>
-            <TextField
-                inputRef={autoCompleteRef}
-                id="standard-basic"
-                label="Standard"
-                variant="standard"
-            />
-            <div ref={mapRef} id="map" style={{
-                width: '100%',
-                height: '100%'
-            }} />
-        </>
-    )
-}
-
+import GMap from './components/g-map';
 
 function App() {
 
@@ -78,6 +16,7 @@ function App() {
 
     useEffect(() => {
         startedRef.current = false
+        console.log(history)
     }, [history])
 
     useEffect(() => {
@@ -130,7 +69,7 @@ function App() {
             <Container maxWidth="xl">
                 <Box sx={{ bgcolor: '#cfe8fc', height: '100vh' }}>
                     <Wrapper apiKey={""} render={render} libraries={['places']}>
-                        <MyMapComponent
+                        <GMap
                             startedRef={startedRef}
                             setPlace={(val) => setPlace(val)}
                         />
