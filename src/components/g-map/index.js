@@ -1,10 +1,9 @@
 import { useRef, useEffect, useState, useMemo } from 'react';
-import { TextField } from '@mui/material'
 
 
 function GMap(props) {
+
     const mapRef = useRef();
-    const autoCompleteRef = useRef();
 
     const initPosition = useMemo(() => ({ lat: 3.1193573, lng: 101.6694215 }), []);
 
@@ -18,43 +17,49 @@ function GMap(props) {
     }, [position]);
 
     useEffect(() => {
-        const autocomplete = new window.google.maps.places.Autocomplete(autoCompleteRef.current, {
-            center: initPosition,
-            zoom: 15,
-        });
 
-        autocomplete.addListener("place_changed", () => {
-            const place = autocomplete.getPlace();
-
-            const placeId = place.place_id;
-            const name = place.name;
-
-            const lat = place.geometry.location.lat();
-            const lng = place.geometry.location.lng();
-
-            setPosition({
-                lat: lat,
-                lng: lng
+        if (props.autoCompleteRef) {
+            const autocomplete = new window.google.maps.places.Autocomplete(props.autoCompleteRef.current, {
+                center: initPosition,
+                zoom: 15,
             });
 
-            props.startedRef.current = true;
+            autocomplete.addListener("place_changed", () => {
+                const place = autocomplete.getPlace();
 
-            props.setPlace({
-                placeId,
-                name
+                const placeId = place.place_id;
+                const name = place.name;
+
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
+
+                setPosition({
+                    lat: lat,
+                    lng: lng
+                });
+
+                props.startedRef.current = true;
+
+                props.setPlace({
+                    placeId,
+                    name,
+                    lat,
+                    lng,
+                })
+            });
+        }
+
+        if (props.latitude && props.longitude) {
+            setPosition({
+                lat: props.latitude,
+                lng: props.longitude
             })
-        });
+        }
 
     }, [initPosition, props]);
 
     return (
         <>
-            <TextField
-                inputRef={autoCompleteRef}
-                id="standard-basic"
-                label="Standard"
-                variant="standard"
-            />
             <div ref={mapRef} id="map" style={{
                 width: '100%',
                 height: '100%'
