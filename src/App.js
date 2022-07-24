@@ -1,7 +1,19 @@
 import { useRef, useEffect, useState } from 'react';
 import './App.css';
-import { Divider, Container, Box } from '@mui/material'
+import {
+    Divider,
+    Container,
+    Box,
+    Typography,
+    List,
+    ListItem,
+    ListItemAvatar,
+    Avatar,
+    ListItemText,
+} from '@mui/material'
+import PlaceIcon from '@mui/icons-material/Place';
 import { Wrapper } from "@googlemaps/react-wrapper";
+import MenuHeader from './components/menu-header';
 import GMap from './components/g-map';
 
 function App() {
@@ -51,29 +63,67 @@ function App() {
 
     return (
         <>
+            <MenuHeader />
+            <Divider sx={{ marginY: '20px' }} />
             <Container maxWidth="xl">
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    marginY: '30px'
-                }}>
-                    <Box>
-                        Place AutoComplete
+                    marginY: '30px',
+                    gap: 2,
+                }}
+                >
+                    <Box sx={{
+                        width: '70%',
+                        minHeight: 500
+                    }}>
+                        <Typography variant="h5" gutterBottom>
+                            Search Place
+                        </Typography>
+                        <Divider />
+                        <Wrapper apiKey={""} render={render} libraries={['places']}>
+                            <GMap
+                                startedRef={startedRef}
+                                setPlace={(val) => setPlace(val)}
+                            />
+                        </Wrapper>
                     </Box>
-                    <Box>
-                        Hello John Doe!
+                    <Box sx={{
+                        width: '30%',
+                    }}>
+                        <Typography variant="h5" gutterBottom>
+                            History
+                        </Typography>
+                        <Divider />
+                        <List sx={{ width: '100%' }}>
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        <PlaceIcon />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="Kuala Lumpur" secondary="Latitude: 1.123442 | Longitude: 234.23232442" />
+                            </ListItem>
+                            <Divider variant="inset" component="li" />
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        <PlaceIcon />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="Kuala Lumpur" secondary="Latitude: 1.123442 | Longitude: 234.23232442" />
+                            </ListItem>
+                            <Divider variant="inset" component="li" />
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        <PlaceIcon />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="Kuala Lumpur" secondary="Latitude: 1.123442 | Longitude: 234.23232442" />
+                            </ListItem>
+                        </List>
                     </Box>
-                </Box>
-            </Container>
-            <Divider sx={{ marginY: '20px' }} />
-            <Container maxWidth="xl">
-                <Box sx={{ bgcolor: '#cfe8fc', height: '100vh' }}>
-                    <Wrapper apiKey={""} render={render} libraries={['places']}>
-                        <GMap
-                            startedRef={startedRef}
-                            setPlace={(val) => setPlace(val)}
-                        />
-                    </Wrapper>
                 </Box>
             </Container>
         </>
